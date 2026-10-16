@@ -1,0 +1,10 @@
+.godot/
+.venv/
+__pycache__/
+*.py[cod]
+*.tmp
+*.log
+*.translation
+export.cfg
+dist/*
+!dist/.gitkeep
