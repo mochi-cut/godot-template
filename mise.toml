@@ -16,7 +16,7 @@ if [ ! -f addons/gdUnit4/plugin.cfg ]; then
 fi
 """
 
-[tasks.run]
+[tasks.dev]
 description = "Run the Godot project"
 run = "godot --path ."
 
@@ -41,30 +41,30 @@ description = "Run GdUnit4 tests"
 depends = ["setup"]
 run = 'GODOT_BIN="$(command -v godot)" ./addons/gdUnit4/runtest.sh -a res://tests'
 
-[tasks.build]
-description = "Build Web (default)"
-depends = ["build-web"]
-
-[tasks.build-web]
+[tasks.export-web]
 description = "Export Web"
 run = 'mkdir -p dist/web && godot --headless --path . --export-release "Web" "dist/web/index.html"'
 
-[tasks.build-linux]
+[tasks.export-linux]
 description = "Export Linux"
 run = 'mkdir -p dist/linux && godot --headless --path . --export-release "Linux" "dist/linux/godot-template.x86_64"'
 
-[tasks.build-windows]
+[tasks.export-windows]
 description = "Export Windows"
 run = 'mkdir -p dist/windows && godot --headless --path . --export-release "Windows Desktop" "dist/windows/godot-template.exe"'
 
-[tasks.build-macos]
+[tasks.export-macos]
 description = "Export macOS"
 run = 'mkdir -p dist/macos && godot --headless --path . --export-release "macOS" "dist/macos/Godot Template.zip"'
-
-[tasks.build-all]
-description = "Export all targets"
-depends = ["build-web", "build-linux", "build-windows", "build-macos"]
 
 [tasks.clean]
 description = "Remove generated files"
 run = "rm -rf .godot .venv __pycache__"
+
+[tasks.export-android]
+description = "Export Android APK (requires Android SDK and export templates)"
+run = 'mkdir -p dist/android && godot --headless --path . --export-release "Android" "dist/android/godot-template.apk"'
+
+[tasks.export-ios]
+description = "Export iOS Xcode project (requires macOS/Xcode for final build)"
+run = 'mkdir -p dist/ios && godot --headless --path . --export-release "iOS" "dist/ios/godot-template.zip"'
