@@ -1,46 +1,60 @@
 # Godot Template
 
-A small starting point for Godot 4 projects. The default scene is a clean title screen; replace it with your game as you build it.
+A small starting point for Godot 4 projects. The initial scene is an empty `Main` node.
 
 ## Requirements
 
-- Godot 4.7 or newer (set `GODOT` to the executable name or path if needed)
-- [uv](https://docs.astral.sh/uv/) for the GDScript formatter and linter
-- GNU Make
+- Linux (primary supported development platform)
+- [mise](https://mise.jdx.dev/)
+- curl and tar (for the GdUnit4 setup task)
 
 ## Getting started
 
 ```sh
-make setup
-make run
+mise trust
+mise install
+mise run setup
+mise run run
 ```
+
+`mise.toml` declares Godot 4.7.2, Python, uv and the isolated `gdtoolkit` CLI environment. Python is a development tool, not an application dependency.
 
 ## Development commands
 
 ```sh
-make format       # format GDScript files
-make lint         # lint GDScript files
-make check        # formatting, lint, and Godot project import check
-make test         # run GdUnit4 tests
-make build-web        # export Web build to dist/web/
-make build-linux      # export Linux x86_64 build to dist/linux/
-make build-windows    # export Windows x86_64 build to dist/windows/
-make build-macos      # export macOS universal build to dist/macos/
-make build-all        # export all four targets
-make clean        # remove generated files
+mise run format
+mise run format-check
+mise run lint
+mise run check
+mise run test
+mise run build-web
+mise run build-linux
+mise run build-windows
+mise run build-macos
+mise run build-all
+mise run clean
 ```
 
-`make setup` also downloads the pinned GdUnit4 plugin into `addons/gdUnit4/` and enables it for the project. `make test` runs suites under `tests/`. Set `GODOT=/path/to/godot` when the executable is not named `godot`.
+`mise run setup` downloads pinned GdUnit4 v6.2.2 into `addons/gdUnit4/`. Test suites belong in `tests/` and should be named `*_test.gd`.
 
-`make check` runs Godot in headless editor mode, which imports project resources and reports parse or resource errors. Each `build-*` target uses its matching preset in `export_presets.cfg`; install matching Godot export templates once in the Godot editor first. `make build` remains an alias for `make build-web`.
+To export, install matching Godot export templates for the pinned engine version. `build` aliases the Web export. Desktop exports are configured but only Linux development has been targeted.
+
+## Standalone Python scripts
+
+For a script needing third-party libraries, use PEP 723 inline metadata and run it with `uv run --script tools/example.py`. For repeatable dependency resolution, run `uv lock --script tools/example.py` and commit the generated `.lock` file. No project-wide Python virtualenv or `pyproject.toml` is needed for this use case.
+
+## Reproducibility
+
+`mise.toml` pins the top-level tool versions. For transitive dependency locking, generate and commit `mise.lock` (and any sidecar lock data created by your mise version) using `mise lock`; then use `mise install --locked` on the target machine. A lockfile is **not** included in this PR because dependency resolution and Linux execution were not available in the authoring environment.
 
 ## Project layout
 
 - `game/` — scenes and game scripts
-- `autoload/` — global scripts registered as autoloads
-- `assets/` — art, audio, and fonts
-- `addons/` — third-party or project editor plugins
-- `tests/` — GdUnit4 test suites (name suites `*_test.gd`)
-- `playground/` — experiments kept outside the main game flow
-- `docs/` — design and development notes
-- `dist/` — local export output (ignored by Git)
+- `autoload/` — global scripts
+- `assets/` — art, audio and fonts
+- `addons/` — Godot plugins
+- `tests/` — GdUnit4 suites
+- `playground/` — experiments
+- `tools/` — standalone utilities
+- `docs/` — development notes
+- `dist/` — ignored build output
