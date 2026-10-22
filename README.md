@@ -13,8 +13,8 @@ A small starting point for Godot 4 projects. The initial scene is an empty `Main
 ```sh
 mise trust
 mise install
-mise run setup
-mise run run
+mise r setup
+mise r dev
 ```
 
 `mise.toml` declares Godot 4.7.2, Python, uv and the isolated `gdtoolkit` CLI environment. Python is a development tool, not an application dependency.
@@ -22,22 +22,23 @@ mise run run
 ## Development commands
 
 ```sh
-mise run format
-mise run format-check
-mise run lint
-mise run check
-mise run test
-mise run build-web
-mise run build-linux
-mise run build-windows
-mise run build-macos
-mise run build-all
-mise run clean
+mise r format
+mise r format-check
+mise r lint
+mise r check
+mise r test
+mise r export-web
+mise r export-linux
+mise r export-windows
+mise r export-macos
+mise r export-android
+mise r export-ios
+mise r clean
 ```
 
 `mise run setup` downloads pinned GdUnit4 v6.2.2 into `addons/gdUnit4/`. Test suites belong in `tests/` and should be named `*_test.gd`.
 
-To export, install matching Godot export templates for the pinned engine version. `build` aliases the Web export. Desktop exports are configured but only Linux development has been targeted.
+To export, install matching Godot export templates for the pinned engine version. Export targets are explicit; there is no default `export` task. Android requires a configured Android SDK and signing setup for release builds. iOS export requires Apple-specific tooling, and completing the Xcode build/signing requires macOS and Xcode. Mobile presets are starting points and have not been validated on devices. Linux is the primary supported development platform.
 
 ## Standalone Python scripts
 
@@ -50,8 +51,7 @@ For a script needing third-party libraries, use PEP 723 inline metadata and run 
 ## Project layout
 
 - `game/` — scenes and game scripts
-- `autoload/` — global scripts
-- `assets/` — art, audio and fonts
+- `assets/` — art, audio, fonts and translations
 - `addons/` — Godot plugins
 - `tests/` — GdUnit4 suites
 - `playground/` — experiments
