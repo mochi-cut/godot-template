@@ -1,0 +1,70 @@
+[tools]
+godot = "4.7.2-stable"
+python = "3.13"
+uv = "0.9"
+"pypi:gdtoolkit" = "4.2"
+
+[tasks.setup]
+description = "Install GdUnit4 into addons/"
+run = """
+set -eu
+if [ ! -f addons/gdUnit4/plugin.cfg ]; then
+  tmp_dir=$(mktemp -d)
+  trap 'rm -rf "$tmp_dir"' EXIT
+  curl -fsSL "https://github.com/godot-gdunit-labs/gdUnit4/archive/refs/tags/v6.2.2.tar.gz" | tar -xz -C "$tmp_dir" --strip-components=1
+  cp -R "$tmp_dir/addons/gdUnit4" addons/gdUnit4
+fi
+"""
+
+[tasks.run]
+description = "Run the Godot project"
+run = "godot --path ."
+
+[tasks.format]
+description = "Format GDScript"
+run = "gdformat ."
+
+[tasks.format-check]
+description = "Check GDScript formatting"
+run = "gdformat --check ."
+
+[tasks.lint]
+description = "Lint GDScript"
+run = "gdlint ."
+
+[tasks.check]
+description = "Format, lint and import check"
+run = ["gdformat --check .", "gdlint .", "godot --headless --path . --editor --quit"]
+
+[tasks.test]
+description = "Run GdUnit4 tests"
+depends = ["setup"]
+run = 'GODOT_BIN="$(command -v godot)" ./addons/gdUnit4/runtest.sh -a res://tests'
+
+[tasks.build]
+description = "Build Web (default)"
+depends = ["build-web"]
+
+[tasks.build-web]
+description = "Export Web"
+run = 'mkdir -p dist/web && godot --headless --path . --export-release "Web" "dist/web/index.html"'
+
+[tasks.build-linux]
+description = "Export Linux"
+run = 'mkdir -p dist/linux && godot --headless --path . --export-release "Linux" "dist/linux/godot-template.x86_64"'
+
+[tasks.build-windows]
+description = "Export Windows"
+run = 'mkdir -p dist/windows && godot --headless --path . --export-release "Windows Desktop" "dist/windows/godot-template.exe"'
+
+[tasks.build-macos]
+description = "Export macOS"
+run = 'mkdir -p dist/macos && godot --headless --path . --export-release "macOS" "dist/macos/Godot Template.zip"'
+
+[tasks.build-all]
+description = "Export all targets"
+depends = ["build-web", "build-linux", "build-windows", "build-macos"]
+
+[tasks.clean]
+description = "Remove generated files"
+run = "rm -rf .godot .venv __pycache__"
